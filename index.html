@@ -1,18 +1,321 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Codify - Support Page</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f3f4f6; }
-        h1 { color: #1d4ed8; }
-        p { color: #4b5563; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Codify — Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --accent: #4f8cff;
+      --accent2: #a78bfa;
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --glow: rgba(79,140,255,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.03) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.03) 40px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Ambient blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--accent); top: -150px; left: -100px; animation: drift 14s ease-in-out infinite alternate; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: -100px; right: -80px; animation: drift 18s ease-in-out infinite alternate-reverse; }
+
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.08); }
+    }
+
+    /* ── Layout ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Nav bar ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0 0;
+      opacity: 0;
+      animation: fadeUp .7s ease .1s forwards;
+    }
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: .05em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-brand span { color: var(--accent); }
+    .badge {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--muted);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 90px 0 70px;
+    }
+    .hero-label {
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .6s ease .2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      opacity: 0;
+      animation: fadeUp .7s ease .3s forwards;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      margin: 24px auto 0;
+      max-width: 500px;
+      color: var(--muted);
+      font-size: .95rem;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp .7s ease .45s forwards;
+    }
+
+    /* ── QR card ── */
+    .qr-section {
+      display: flex;
+      justify-content: center;
+      margin: 52px 0;
+      opacity: 0;
+      animation: fadeUp .7s ease .55s forwards;
+    }
+    .qr-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 0 60px var(--glow);
+      transition: box-shadow .3s, transform .3s;
+    }
+    .qr-card:hover {
+      box-shadow: 0 0 90px rgba(79,140,255,.3);
+      transform: translateY(-4px);
+    }
+    .qr-card img {
+      width: 180px;
+      height: 180px;
+      border-radius: 10px;
+      display: block;
+    }
+    .qr-label {
+      font-size: .72rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Info cards grid ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 0 0 52px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      opacity: 0;
+      animation: fadeUp .7s ease var(--d, .6s) forwards;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px var(--glow);
+    }
+    .card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .card-body {
+      font-size: .85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .card-body a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .card-body a:hover { text-decoration: underline; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 52px 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      font-size: .78rem;
+      color: var(--muted);
+      letter-spacing: .06em;
+      opacity: 0;
+      animation: fadeUp .6s ease .9s forwards;
+    }
+    footer strong { color: var(--text); }
+
+    /* ── Terminal blink ── */
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    <h1>Codify App</h1>
-    <p>Benvenuti nella pagina ufficiale di supporto di Codify.</p>
-    <p>Per domande o assistenza, contattaci tramite la Google Play Console.</p>
-    <br>
-    <small>© 2026 Rizza Luciano</small>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<div class="wrapper">
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-brand" href="#"><span>//</span> Codify</a>
+    <span class="badge">Support</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-label">Pagina ufficiale di supporto</p>
+    <h1>Ciao, come possiamo<br><span class="gradient">aiutarti?</span><span class="cursor"></span></h1>
+    <p class="hero-sub">
+      Benvenuto nel centro assistenza di <strong>Codify</strong>. Trova le risposte che cerchi oppure contattaci direttamente — siamo qui per te.
+    </p>
+  </section>
+
+  <!-- QR code -->
+  <div class="qr-section">
+    <div class="qr-card">
+      <img src="icon.png" alt="QR Code Codify"/>
+      <span class="qr-label">Scansiona per aprire l'app</span>
+    </div>
+  </div>
+
+  <!-- Info cards -->
+  <div class="cards">
+    <div class="card" style="--d:.6s">
+      <div class="card-icon">📦</div>
+      <div class="card-title">Produttore</div>
+      <div class="card-body">
+        <strong>Taisei</strong><br>
+        Sviluppatore ufficiale dell'applicazione Codify, disponibile su Google Play Store.
+      </div>
+    </div>
+
+    <div class="card" style="--d:.72s">
+      <div class="card-icon">✉️</div>
+      <div class="card-title">Contattaci</div>
+      <div class="card-body">
+        Per assistenza tecnica o domande, scrivi a:<br>
+        <a href="mailto:rizzaluciano@gmail.com">rizzaluciano@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="card" style="--d:.84s">
+      <div class="card-icon">🛠️</div>
+      <div class="card-title">Supporto</div>
+      <div class="card-body">
+        Puoi segnalare bug o richiedere nuove funzionalità direttamente tramite la Google Play Console o via email.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2026 <strong>Taisei</strong> — Codify App. Tutti i diritti riservati.
+  </footer>
+
+</div>
 </body>
 </html>
